@@ -6,6 +6,8 @@ by Ruben Fonseca (rubenfonseca)
 
 Online rails configuration generator using etcd as source data.
 
+[![Demo](https://dl.dropboxusercontent.com/u/110525/rails-configd.gif)]
+
 ## Features
 
 * Bring the power of [etcd](https://github.com/coreos/etcd) live changes to your Rails app
