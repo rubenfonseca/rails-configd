@@ -8,7 +8,7 @@ Online rails configuration generator using etcd as source data.
 
 Features
 ========
-* Bring the power of etcd live changes to your Rails app
+* Bring the power of [etcd](https://github.com/coreos/etcd) live changes to your Rails app
 * Everytime there's a change on an etcd dir, your Rails config files are updated and processes are restarted
 * Written in Go so no runtime dependency on your production servers
 * Extendable system to support more rendererers (turns etcd data into files) and reloaders (reloads Rails processes)
