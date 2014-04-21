@@ -1,4 +1,4 @@
-[![GoDoc](https://godoc.org/github.com/rubenfonseca/rails-configd?status.png)](https://godoc.org/github.com/rubenfonseca/rails-configd)[![Build Status](https://secure.travis-ci.org/rubenfonseca/rails-configd.png?branch=master)](http://travis-ci.org/rubenfonseca/rails-configd)
+[![GoDoc](https://godoc.org/github.com/rubenfonseca/rails-configd?status.png)](https://godoc.org/github.com/rubenfonseca/rails-configd) [![Build Status](https://secure.travis-ci.org/rubenfonseca/rails-configd.png?branch=master)](http://travis-ci.org/rubenfonseca/rails-configd)
 
 rails-configd
 =============
