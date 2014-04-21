@@ -7,15 +7,25 @@ import (
 	"github.com/coreos/go-etcd/etcd"
 )
 
+// Env represents all the necessary data the core needs to run
 type Env struct {
+	// The rails environment is usefull when generating the config file
 	RailsEnv *string
-	Etcd     *string
-	EtcdDir  *string
-	Data     map[string]interface{}
+	// Etcd address
+	Etcd *string
+	// Directory inside etcd that contains the configuration
+	EtcdDir *string
+	// Structure that holds the configuration data in memory
+	Data map[string]interface{}
+	// An instance of a renderer
 	Renderer Renderer
+	// An instance of a reloader
 	Reloader Reloader
 }
 
+// Cycles the rails environemnt, by rendering a new configuration
+// file and reloading the Rails processes. Uses the existing renderer
+// and reloader instances.
 func (env *Env) Cycle() {
 	log.Printf("[ENV] Rendering and reloading...")
 
@@ -23,6 +33,9 @@ func (env *Env) Cycle() {
 	env.Reloader.Reload()
 }
 
+// Taking a etcd node and a prefix, updates the in memory data.
+// If the etcd node represents a nested directory, this function calls recursively
+// with the new prefix, trying to create a tree structure in memory.
 func (env *Env) BuildData(node etcd.Node, prefix string, data map[string]interface{}) {
 	for i := range node.Nodes {
 		node := node.Nodes[i]
@@ -37,6 +50,8 @@ func (env *Env) BuildData(node etcd.Node, prefix string, data map[string]interfa
 	}
 }
 
+// Updates the data from an etcd watch update. Takes into consideration the type of action
+// (set or delete) and navigates through the parts until if finds the correct node to update.
 func (env *Env) UpdateData(parts []string, value string, action string, data map[string]interface{}) {
 	head := parts[0]
 	tail := parts[1:]
@@ -57,6 +72,7 @@ func (env *Env) UpdateData(parts []string, value string, action string, data map
 	}
 }
 
+// Removes the prefix from a key, including trailing slashes
 func (env *Env) NakedKey(key string, prefix string) string {
 	key = strings.Replace(key, prefix, "", -1)
 	return strings.Replace(key, "/", "", 1)
