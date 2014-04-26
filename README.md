@@ -55,6 +55,6 @@ I also do :) Then the sollution is to run one `rails-configd` daemon for each fi
 etcd directory, and you can control the output file with the param `yaml-file`.
 Don't worry about resources, go daemons like this use very little memory :-)
 
-## But I'm running this super awesome application server that doesn't support reloading by touching `tmp/restart.txt`!
+### But I'm running this super awesome application server that doesn't support reloading by touching `tmp/restart.txt`!
 
 Then pachtes are welcome :) There's a reloader interface on the code that you can implement with your own reloading method!
