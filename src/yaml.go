@@ -15,8 +15,7 @@ type YamlRenderer struct {
 func (renderer *YamlRenderer) Render(env Env) {
 	log.Printf("[YAML RENDERER] Rendering to %s", *renderer.YamlFile)
 
-	yamlData := map[string]map[string]interface{}{*env.RailsEnv: env.Data}
-	out, err := yaml.Marshal(yamlData)
+	out, err := yaml.Marshal(env.Data)
 	if err != nil {
 		panic(err)
 	}

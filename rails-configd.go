@@ -47,9 +47,8 @@ func main() {
 	env.Data = make(map[string]interface{})
 
 	env.Etcd = flag.String("etcd", "http://localhost:4001", "etcd address location")
-	env.EtcdDir = flag.String("etcd-dir", "/rails/production", "etcd directory that contains the configurations")
+	env.EtcdDir = flag.String("etcd-dir", "/rails_app01", "etcd directory that contains the configurations")
 
-	env.RailsEnv = flag.String("env", "production", "The Rails environment to configure")
 	rendererPtr := flag.String("renderer", "yaml", "The renderer to use when outputing the configs")
 	reloaderPtr := flag.String("reloader", "touch", "The strategy to reload the Rails app")
 

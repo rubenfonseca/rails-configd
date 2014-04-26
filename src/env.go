@@ -9,8 +9,6 @@ import (
 
 // Env represents all the necessary data the core needs to run
 type Env struct {
-	// The rails environment is usefull when generating the config file
-	RailsEnv *string
 	// Etcd address
 	Etcd *string
 	// Directory inside etcd that contains the configuration
