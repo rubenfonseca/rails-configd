@@ -62,7 +62,13 @@ Don't worry about resources, go daemons like this use very little memory :-)
 
 Then pachtes are welcome :) There's a reloader interface on the code that you can implement with your own reloading method!
 
-## License
+## Project details
+
+### Versioning
+
+rails-configd uses [semantic versioning](http://semver.org/).
+
+### License
 
 rails-configd is under MIT license. See the [LICENSE][license] file for details.
 

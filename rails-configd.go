@@ -17,7 +17,8 @@ import (
 	"github.com/rubenfonseca/rails-configd/src"
 )
 
-var usageMessage = `This is a tool for watching over etcd tree, create config files for Rails, and restart the Rails processes.
+var usageMessage = `rails-configd [%s]
+This is a tool for watching over etcd tree, create config files for Rails, and restart the Rails processes.
 
 Usage: %s [options]
 
@@ -25,7 +26,7 @@ The following options are recognized:
 `
 
 func usage() {
-	fmt.Fprintf(os.Stderr, usageMessage, os.Args[0])
+	fmt.Fprintf(os.Stderr, usageMessage, releaseVersion, os.Args[0])
 	flag.PrintDefaults()
 	os.Exit(2)
 }
