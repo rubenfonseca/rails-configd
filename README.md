@@ -28,14 +28,17 @@ Online rails configuration generator using etcd as source data.
 
 First you have to set the data on your etcd cluster. Let's try to configure the database on our production rails app.
 
-    $ etcdctl set rails_app01/database/production/host lan.db01.example.com
-    $ etcdctl set rails_app01/database/production/adapter pg
-    $ etcdctl set rails_app01/database/production/database db01
-    $ etcdctl set rails_app01/database/production/username dbuser
+    $ export DIR=rails_app01/database/production
+    $ etcdctl set $DIR/host lan.db01.example.com
+    $ etcdctl set $DIR/adapter pg
+    $ etcdctl set $DIR/database db01
+    $ etcdctl set $DIR/username dbuser
 
 Then, next to each Rails app, you should run a `rails-configd` daemon:
 
-    $ rails-configd --etcd http://localhost:4001 --etcd-dir /rails_app01 --renderer yaml --yaml-file config/database.yml --reloader touch
+    $ rails-configd --etcd http://localhost:4001 --etcd-dir /rails_app01 \
+                    --renderer yaml --yaml-file config/database.yml \
+                    --reloader touch
 
 This will read from etcd under `/rails_app01` directory and build the `config/database.yml` file. After this, any
 change to a key under the `etcd-dir` directory will trigger the generation of a new `database.yml` file, and reload
@@ -58,3 +61,9 @@ Don't worry about resources, go daemons like this use very little memory :-)
 ### But I'm running this super awesome application server that doesn't support reloading by touching `tmp/restart.txt`!
 
 Then pachtes are welcome :) There's a reloader interface on the code that you can implement with your own reloading method!
+
+## License
+
+rails-configd is under MIT license. See the [LICENSE][license] file for details.
+
+[license]: https://github.com/rubenfonseca/rails-configd/blob/master/LICENSE
