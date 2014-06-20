@@ -41,7 +41,7 @@ func (env *Env) BuildData(node etcd.Node, prefix string, data map[string]interfa
 
 		if node.Dir {
 			data[key] = make(map[string]interface{})
-			env.BuildData(node, prefix+"/"+key, data[key].(map[string]interface{}))
+			env.BuildData(*node, prefix+"/"+key, data[key].(map[string]interface{}))
 		} else {
 			data[key] = node.Value
 		}

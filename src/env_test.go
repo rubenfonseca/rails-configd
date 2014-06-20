@@ -39,8 +39,8 @@ func TestBuildData(t *testing.T) {
 	env := Env{}
 
 	hostnameNode := etcd.Node{Key: "/rails/mongodb/hostname", Value: "localhost"}
-	mongoDbNode := etcd.Node{Key: "/rails/mongodb", Dir: true, Nodes: etcd.Nodes{hostnameNode}}
-	dirNode := etcd.Node{Dir: true, Nodes: etcd.Nodes{mongoDbNode}}
+	mongoDbNode := etcd.Node{Key: "/rails/mongodb", Dir: true, Nodes: etcd.Nodes{&hostnameNode}}
+	dirNode := etcd.Node{Dir: true, Nodes: etcd.Nodes{&mongoDbNode}}
 
 	data := map[string]interface{}{}
 	env.BuildData(dirNode, "/rails", data)
