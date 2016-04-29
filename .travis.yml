@@ -3,6 +3,7 @@ go:
   - 1.5
   - 1.6
   - tip
+gobuild_args: -v -race
 install:
   - go get github.com/bmizerany/assert
   - go get github.com/rubenfonseca/rails-configd
