@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/bmizerany/assert"
-	"github.com/coreos/go-etcd/etcd"
+	"github.com/coreos/etcd/client"
 )
 
 type MockRenderer struct {
@@ -38,9 +38,9 @@ func TestCycle(t *testing.T) {
 func TestBuildData(t *testing.T) {
 	env := Env{}
 
-	hostnameNode := etcd.Node{Key: "/rails/mongodb/hostname", Value: "localhost"}
-	mongoDbNode := etcd.Node{Key: "/rails/mongodb", Dir: true, Nodes: etcd.Nodes{&hostnameNode}}
-	dirNode := etcd.Node{Dir: true, Nodes: etcd.Nodes{&mongoDbNode}}
+	hostnameNode := client.Node{Key: "/rails/mongodb/hostname", Value: "localhost"}
+	mongoDbNode := client.Node{Key: "/rails/mongodb", Dir: true, Nodes: client.Nodes{&hostnameNode}}
+	dirNode := client.Node{Dir: true, Nodes: client.Nodes{&mongoDbNode}}
 
 	data := map[string]interface{}{}
 	env.BuildData(dirNode, "/rails", data)

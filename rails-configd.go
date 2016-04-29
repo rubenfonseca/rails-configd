@@ -13,7 +13,9 @@ import (
 	"os/signal"
 	"strings"
 
-	"github.com/coreos/go-etcd/etcd"
+	"golang.org/x/net/context"
+
+	"github.com/coreos/etcd/client"
 	"github.com/rubenfonseca/rails-configd/src"
 )
 
@@ -31,7 +33,7 @@ func usage() {
 	os.Exit(2)
 }
 
-func loop(receiverChannel chan *etcd.Response, env src.Env) {
+func loop(receiverChannel chan *client.Response, env src.Env) {
 	for response := range receiverChannel {
 		key := env.NakedKey(response.Node.Key, *env.EtcdDir)
 		parts := strings.Split(key, "/")
@@ -73,15 +75,21 @@ func main() {
 	}
 
 	// etcd
-	receiverChannel := make(chan *etcd.Response)
+	receiverChannel := make(chan *client.Response)
 	stopChannel := make(chan bool)
-	etcdClient := etcd.NewClient([]string{*env.Etcd})
-	success := etcdClient.SyncCluster()
-	if !success {
-		log.Fatal("Cannot sync with etcd machines, please check --etcd")
+
+	etcdNewClientConfig := client.Config{
+		Endpoints: []string{*env.Etcd},
 	}
 
-	etcdResponse, err := etcdClient.Get(*env.EtcdDir, false, true)
+	etcdNewClient, err := client.New(etcdNewClientConfig)
+	if err != nil {
+		log.Fatal("Cannot connect to etcd machines, pleace check --etcd")
+	}
+	etcdClient := client.NewKeysAPI(etcdNewClient)
+
+	etcdGetOptions := &client.GetOptions{Recursive: true, Sort: false}
+	etcdResponse, err := etcdClient.Get(context.Background(), *env.EtcdDir, etcdGetOptions)
 	if err != nil {
 		panic(err)
 	}
@@ -92,7 +100,11 @@ func main() {
 	env.Cycle()
 
 	log.Printf("[MAIN] Waiting for changes from etcd @ %s", *env.EtcdDir)
-	go etcdClient.Watch(*env.EtcdDir, 0, true, receiverChannel, stopChannel)
+	etcdWatcherOptions := &client.WatcherOptions{AfterIndex: 0, Recursive: true}
+	etcdWatcher := etcdClient.Watcher(*env.EtcdDir, etcdWatcherOptions)
+
+	watcher := src.Watcher{EtcdWatcher: etcdWatcher, StopChannel: stopChannel}
+	receiverChannel = watcher.Loop()
 
 	// signals
 	osSignal := make(chan os.Signal)

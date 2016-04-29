@@ -4,7 +4,7 @@ import (
 	"log"
 	"strings"
 
-	"github.com/coreos/go-etcd/etcd"
+	"github.com/coreos/etcd/client"
 )
 
 // Env represents all the necessary data the core needs to run
@@ -34,7 +34,7 @@ func (env *Env) Cycle() {
 // Taking a etcd node and a prefix, updates the in memory data.
 // If the etcd node represents a nested directory, this function calls recursively
 // with the new prefix, trying to create a tree structure in memory.
-func (env *Env) BuildData(node etcd.Node, prefix string, data map[string]interface{}) {
+func (env *Env) BuildData(node client.Node, prefix string, data map[string]interface{}) {
 	for i := range node.Nodes {
 		node := node.Nodes[i]
 		key := env.NakedKey(node.Key, prefix)
