@@ -1,0 +1,34 @@
+{
+	"ImportPath": "github.com/rubenfonseca/rails-configd",
+	"GoVersion": "go1.6",
+	"GodepVersion": "v62",
+	"Deps": [
+		{
+			"ImportPath": "github.com/coreos/etcd/client",
+			"Comment": "v2.3.0-606-g4480eb6",
+			"Rev": "4480eb6d49ae2d45a18ba3ee032fe0728af9cfca"
+		},
+		{
+			"ImportPath": "github.com/coreos/etcd/pkg/pathutil",
+			"Comment": "v2.3.0-606-g4480eb6",
+			"Rev": "4480eb6d49ae2d45a18ba3ee032fe0728af9cfca"
+		},
+		{
+			"ImportPath": "github.com/coreos/etcd/pkg/types",
+			"Comment": "v2.3.0-606-g4480eb6",
+			"Rev": "4480eb6d49ae2d45a18ba3ee032fe0728af9cfca"
+		},
+		{
+			"ImportPath": "github.com/ugorji/go/codec",
+			"Rev": "ea9cd21fa0bc41ee4bdd50ac7ed8cbc7ea2ed960"
+		},
+		{
+			"ImportPath": "golang.org/x/net/context",
+			"Rev": "2e9cee70ee697e0a2ef894b560dda50dec7dff58"
+		},
+		{
+			"ImportPath": "gopkg.in/v1/yaml",
+			"Rev": "72c33f6840f49f9ed7d1faef7562b3266640fdf4"
+		}
+	]
+}
