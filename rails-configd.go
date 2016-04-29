@@ -19,7 +19,14 @@ import (
 	"github.com/rubenfonseca/rails-configd/src"
 )
 
-var usageMessage = `rails-configd [%s]
+var (
+	etcdFlag     = flag.String("etcd", "http://localhost:4001", "etcd address location")
+	etcdDirFlag  = flag.String("etcd-dir", "/rails_app01", "etcd directory that contains the configurations")
+	rendererFlag = flag.String("renderer", "yaml", "The renderer to use when outputing the configs")
+	reloaderFlag = flag.String("reloader", "touch", "The strategy to reload the Rails app")
+)
+
+const usageMessage = `rails-configd [%s]
 This is a tool for watching over etcd tree, create config files for Rails, and restart the Rails processes.
 
 Usage: %s [options]
@@ -27,10 +34,9 @@ Usage: %s [options]
 The following options are recognized:
 `
 
-func usage() {
+func printHelp() {
 	fmt.Fprintf(os.Stderr, usageMessage, releaseVersion, os.Args[0])
 	flag.PrintDefaults()
-	os.Exit(2)
 }
 
 func loop(receiverChannel chan *client.Response, env src.Env) {
@@ -46,30 +52,23 @@ func loop(receiverChannel chan *client.Response, env src.Env) {
 }
 
 func main() {
-	env := src.Env{}
-	env.Data = make(map[string]interface{})
-
-	env.Etcd = flag.String("etcd", "http://localhost:4001", "etcd address location")
-	env.EtcdDir = flag.String("etcd-dir", "/rails_app01", "etcd directory that contains the configurations")
-
-	rendererPtr := flag.String("renderer", "yaml", "The renderer to use when outputing the configs")
-	reloaderPtr := flag.String("reloader", "touch", "The strategy to reload the Rails app")
+	var err error
+	env := src.Env{Etcd: etcdFlag, EtcdDir: etcdDirFlag, Data: make(map[string]interface{})}
 
 	src.RegisterRendererFlags()
 	src.RegisterReloaderFlags()
 
-	flag.Usage = usage
+	flag.Usage = printHelp
 	flag.Parse()
 
 	// renderer
-	renderer, err := src.OpenRenderer(*rendererPtr)
+	env.Renderer, err = src.OpenRenderer(*rendererFlag)
 	if err != nil {
 		panic(err)
 	}
-	env.Renderer = renderer
 
 	// reloader
-	env.Reloader, err = src.OpenReloader(*reloaderPtr)
+	env.Reloader, err = src.OpenReloader(*reloaderFlag)
 	if err != nil {
 		panic(err)
 	}
