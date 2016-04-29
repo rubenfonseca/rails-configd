@@ -74,22 +74,19 @@ func main() {
 		panic(err)
 	}
 
+	// main app context
+	ctx, cancel := context.WithCancel(context.Background())
+
 	// etcd
-	receiverChannel := make(chan *client.Response)
-	stopChannel := make(chan bool)
-
-	etcdNewClientConfig := client.Config{
-		Endpoints: []string{*env.Etcd},
-	}
-
-	etcdNewClient, err := client.New(etcdNewClientConfig)
+	etcdClientConfig := client.Config{Endpoints: []string{*env.Etcd}}
+	etcdClient, err := client.New(etcdClientConfig)
 	if err != nil {
 		log.Fatal("Cannot connect to etcd machines, pleace check --etcd")
 	}
-	etcdClient := client.NewKeysAPI(etcdNewClient)
+	etcdKeyClient := client.NewKeysAPI(etcdClient)
 
 	etcdGetOptions := &client.GetOptions{Recursive: true, Sort: false}
-	etcdResponse, err := etcdClient.Get(context.Background(), *env.EtcdDir, etcdGetOptions)
+	etcdResponse, err := etcdKeyClient.Get(ctx, *env.EtcdDir, etcdGetOptions)
 	if err != nil {
 		panic(err)
 	}
@@ -99,12 +96,13 @@ func main() {
 	env.BuildData(*etcdResponse.Node, *env.EtcdDir, env.Data)
 	env.Cycle()
 
+	// watcher
 	log.Printf("[MAIN] Waiting for changes from etcd @ %s", *env.EtcdDir)
 	etcdWatcherOptions := &client.WatcherOptions{AfterIndex: 0, Recursive: true}
-	etcdWatcher := etcdClient.Watcher(*env.EtcdDir, etcdWatcherOptions)
+	etcdWatcher := etcdKeyClient.Watcher(*env.EtcdDir, etcdWatcherOptions)
 
-	watcher := src.Watcher{EtcdWatcher: etcdWatcher, StopChannel: stopChannel}
-	receiverChannel = watcher.Loop()
+	watcher := src.Watcher{EtcdWatcher: etcdWatcher}
+	receiverChannel := watcher.Loop(ctx)
 
 	// signals
 	osSignal := make(chan os.Signal)
@@ -112,7 +110,7 @@ func main() {
 	go func() {
 		for _ = range osSignal {
 			log.Print("Interrupt received, finishing")
-			stopChannel <- true
+			cancel()
 		}
 	}()
 
